@@ -1,0 +1,37 @@
+name: "tagged-release"
+
+on:
+  push:
+    tags:
+      - /.*/
+
+jobs:
+  build:
+    # todo: run on both OS
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest] 
+        node-version: [12.x]
+
+    steps:
+    - name: Install dependencies
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Lint
+      run: yarn lint
+    - name: Test Types
+      run: yarn test:types
+    - name: Test
+      run: yarn test
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Publish
+      uses: mikeal/merge-release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

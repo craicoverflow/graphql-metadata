@@ -8,25 +8,6 @@ on:
       - /.*/
 
 jobs:
-  build:
-    # todo: run on both OS
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest] 
-        node-version: [12.x]
-
-    steps:
-    - name: Install dependencies
-      run: yarn install
-    - name: Build
-      run: yarn build
-    - name: Lint
-      run: yarn lint
-    - name: Test Types
-      run: yarn test:types
-    - name: Test
-      run: yarn test
   publish:
     name: Publish
     needs: build

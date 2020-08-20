@@ -8,6 +8,31 @@ on:
       - /.*/
 
 jobs:
+  build:
+    # todo: run on both OS
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Lint
+      run: yarn lint
+    - name: Test Types
+      run: yarn test:types
+    - name: Test
+      run: yarn test
+
   publish:
     name: Publish
     needs: build

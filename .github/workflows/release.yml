@@ -1,6 +1,8 @@
 name: "tagged-release"
 
 on:
+  release:
+    types: [released, prereleased]
   push:
     tags:
       - /.*/

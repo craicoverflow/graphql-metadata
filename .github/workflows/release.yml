@@ -56,9 +56,12 @@ jobs:
       if: steps.cache-modules.outputs.cache-hit != 'true'
       run: yarn install
     
-    - name: Publish
-      uses: mikeal/merge-release@master
+    - name: Create .npmrc
+      run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_AUTH_TOKEN}}" > ~/.npmrc
       env:
-        pre_release: ${{ github.event.release.prerelease }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+    - name: Publish to npm
+      run: npm run publish --no-git-tag-version
+      env:
+        TAG: ${GITHUB_REF#"refs/tags/"}
+        PRE_RELEASE: ${{github.event.release.prerelease}}
